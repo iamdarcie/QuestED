@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Corner Store Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #1D9E75;
+  --green-light: #E1F5EE;
+  --green-dark: #085041;
+  --amber: #F5A623;
+  --amber-light: #FFF3DC;
+  --purple: #7F77DD;
+  --purple-light: #EEEDFE;
+  --red: #E24B4A;
+  --red-light: #FCEBEB;
+  --bg: #F0EDE6;
+  --card: #FFFFFF;
+  --text: #1a1a1a;
+  --text-soft: #6b7280;
+  --border: rgba(0,0,0,0.08);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --sidebar-w: 280px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: "Nunito Sans", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT WRAPPER ── */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── SIDEBAR (desktop only) ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  font-family: "Nunito", sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--green);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebar-student {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+}
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: all .15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.sidebar-nav-item:hover { background: var(--bg); color: var(--text); }
+.sidebar-nav-item.active { background: var(--green-light); color: var(--green-dark); }
+.sidebar-nav-icon { font-size: 18px; width: 24px; text-align: center; }
+.sidebar-energy { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
+.sidebar-xp {
+  background: var(--amber-light);
+  color: #92570a;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 32px;
+  max-width: 720px;
+}
+
+/* ── MOBILE TOP BAR (hidden on desktop) ── */
+.mobile-topbar { display: none; }
+.mobile-bottom-nav { display: none; }
+
+/* ── SCREENS ── */
+.screen { display: none; animation: fadeUp .25s ease; }
+.screen.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  margin-bottom: 24px;
+}
+.page-title {
+  font-family: "Nunito", sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.page-sub { font-size: 14px; color: var(--text-soft); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.card-sm { padding: 14px; border-radius: var(--radius-sm); }
+
+/* ── STATS ROW ── */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.stat { background: var(--card); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 16px 12px; text-align: center; }
+.stat-val { font-family: "Nunito", sans-serif; font-size: 26px; font-weight: 800; color: var(--text); }
+.stat-lbl { font-size: 12px; color: var(--text-soft); margin-top: 3px; }
+
+/* ── ENERGY BAR ── */
+.energy-wrap { margin-bottom: 6px; }
+.energy-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-soft); margin-bottom: 5px; }
+.energy-track { background: #e5e3dc; border-radius: 99px; height: 10px; overflow: hidden; }
+.energy-fill { height: 100%; border-radius: 99px; background: var(--green); transition: width .5s cubic-bezier(.4,0,.2,1), background .3s; }
+
+/* ── BUTTONS ── */
+.btn {
+  width: 100%; padding: 15px;
+  border-radius: var(--radius-sm);
+  border: none; font-size: 15px; font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  cursor: pointer; transition: transform .1s, opacity .1s;
+  margin-bottom: 8px; display: block; text-align: center;
+}
+.btn:active { transform: scale(0.97); }
+.btn-green { background: var(--green); color: #fff; }
+.btn-soft { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+.btn-amber { background: var(--amber); color: #fff; }
+
+/* ── SUBJECT PILLS ── */
+.subject-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.subj-btn {
+  padding: 9px 18px; border-radius: 99px;
+  border: 1.5px solid var(--border);
+  background: var(--card); color: var(--text-soft);
+  font-size: 14px; font-weight: 700; font-family: "Nunito", sans-serif;
+  cursor: pointer; transition: all .15s;
+}
+.subj-btn.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* ── CUSTOMER BUBBLE ── */
+.customer-bubble {
+  background: var(--purple-light);
+  border: 1.5px solid var(--purple);
+  border-radius: var(--radius); padding: 16px;
+  margin-bottom: 14px;
+}
+.customer-name { font-family:"Nunito",sans-serif; font-size:13px; font-weight:800; color:#3C3489; margin-bottom:5px; }
+.customer-text { font-size: 15px; color: #26215C; line-height: 1.6; }
+
+/* ── CHOICES ── */
+.choice {
+  width: 100%; padding: 15px 18px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--card); color: var(--text);
+  font-size: 15px; font-weight: 600; font-family: "Nunito Sans", sans-serif;
+  text-align: left; cursor: pointer;
+  transition: all .15s; margin-bottom: 8px; display: block;
+}
+.choice:hover { border-color: var(--green); background: var(--green-light); }
+.choice.correct { background: var(--green-light); border-color: var(--green); color: var(--green-dark); pointer-events:none; }
+.choice.wrong { background: var(--red-light); border-color: var(--red); color: #791F1F; pointer-events:none; }
+.choice.reveal { background: #F7F6F2; border-color: #ddd; color: var(--text-soft); pointer-events:none; }
+
+/* ── FEEDBACK ── */
+.feedback { border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; border: 1.5px solid; }
+.feedback.good { background: var(--green-light); border-color: var(--green); }
+.feedback.bad { background: var(--red-light); border-color: var(--red); }
+.feedback.good .fb-title { color: var(--green-dark); font-family:"Nunito",sans-serif; font-size:16px; font-weight:800; margin-bottom:5px; }
+.feedback.bad .fb-title { color: #791F1F; font-family:"Nunito",sans-serif; font-size:16px; font-weight:800; margin-bottom:5px; }
+.feedback .fb-body { font-size: 14px; line-height: 1.5; }
+.feedback.good .fb-body { color: #0F6E56; }
+.feedback.bad .fb-body { color: #A32D2D; }
+
+/* ── DELIVERY BANNER ── */
+.delivery-banner {
+  background: var(--amber-light); border: 1.5px solid var(--amber);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+}
+.delivery-title { font-family:"Nunito",sans-serif; font-size:15px; font-weight:800; color: #7a4500; margin-bottom:5px; }
+.delivery-body { font-size: 14px; color: #92570a; line-height: 1.5; }
+
+/* ── PROGRESS BAR ── */
+.prog-wrap { margin-bottom: 12px; }
+.prog-label { display:flex; justify-content:space-between; font-size:13px; color:var(--text-soft); margin-bottom:5px; font-weight:600; }
+.prog-track { background:#e5e3dc; border-radius:99px; height:8px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:99px; background:var(--green); transition:width .4s ease; }
+
+/* ── MASTERY ── */
+.mastery-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+.mastery-row:last-child { border-bottom:none; }
+.mastery-subj { font-size:14px; font-weight:700; color:var(--text); width:90px; flex-shrink:0; }
+.mastery-track { flex:1; background:#e5e3dc; border-radius:99px; height:8px; overflow:hidden; }
+.mastery-fill { height:100%; border-radius:99px; transition:width .5s; }
+.mastery-pct { font-size:13px; font-weight:700; width:38px; text-align:right; flex-shrink:0; }
+
+/* ── RESULT ── */
+.result-big { text-align:center; padding: 28px 16px 20px; }
+.result-num { font-family:"Nunito",sans-serif; font-size:64px; font-weight:900; color:var(--green); line-height:1; }
+.result-sub { font-size:15px; color:var(--text-soft); margin-top:8px; }
+
+/* ── MODE BADGE ── */
+.mode-badge { display:inline-block; padding:4px 12px; border-radius:99px; font-size:12px; font-weight:700; font-family:"Nunito",sans-serif; }
+.mode-normal { background:var(--green-light); color:var(--green-dark); }
+.mode-easy { background:var(--amber-light); color:#7a4500; }
+.mode-recovery { background:var(--red-light); color:#791F1F; }
+
+/* ── SECTION TITLE ── */
+.section-title { font-family:"Nunito",sans-serif; font-size:17px; font-weight:800; color:var(--text); margin-bottom:12px; }
+
+/* ── SHELF ── */
+.shelf-row { display:flex; align-items:center; gap:10px; padding:10px; background:var(--bg); border-radius:var(--radius-sm); margin-bottom:8px; border:1px solid var(--border); }
+.shelf-icon { width:38px;height:38px; border-radius:8px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.shelf-info { flex:1; }
+.shelf-name { font-size:13px; font-weight:700; color:var(--text); }
+.shelf-detail { font-size:11px; color:var(--text-soft); margin-top:1px; }
+
+/* ── ANIMATIONS ── */
+@keyframes truckIn { from { transform:translateX(60px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+.truck-anim { animation: truckIn .5s ease; }
+@keyframes flicker { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.1)} }
+.streak-active { animation: flicker .6s ease-in-out infinite; }
+@keyframes coinPop { 0%{transform:scale(0) translateY(0);opacity:1} 80%{transform:scale(1.2) translateY(-30px);opacity:1} 100%{transform:scale(1) translateY(-40px);opacity:0} }
+.coin-pop { position:fixed; font-size:32px; pointer-events:none; animation: coinPop .8s ease forwards; z-index:999; }
+
+/* ════════════════════════════
+   MOBILE BREAKPOINT
+   ════════════════════════════ */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main-content { padding: 16px 14px 80px; max-width: 100%; }
+  .app-shell { display: block; }
+
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 0;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .mobile-topbar-title { font-family:"Nunito",sans-serif; font-size:17px; font-weight:900; color:var(--text); }
+  .mobile-xp { background:var(--amber-light); color:#92570a; padding:4px 11px; border-radius:99px; font-size:12px; font-weight:700; }
+
+  .mobile-energy { padding: 10px 16px 4px; background: var(--bg); position: sticky; top: 46px; z-index: 9; }
+
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed; bottom:0; left:0; right:0;
+    background: var(--card); border-top: 1px solid var(--border);
+    padding: 10px 0 14px; z-index: 100;
+  }
+  .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:11px; font-weight:700; font-family:"Nunito",sans-serif; color:var(--text-soft); cursor:pointer; transition:color .15s; }
+  .nav-item.active { color: var(--green); }
+  .nav-icon { font-size:20px; }
+
+  .page-title { font-size: 22px; }
+  .result-num { font-size: 52px; }
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE TOP BAR -->
+<div class="mobile-topbar">
+  <div class="mobile-topbar-title" id="top-title-mobile">Corner Store</div>
+  <div class="mobile-xp" id="top-xp-mobile">15 XP</div>
+</div>
+<div class="mobile-energy">
+  <div class="energy-label">
+    <span>Energy</span>
+    <span id="energy-text-mobile">10 / 10</span>
+  </div>
+  <div class="energy-track"><div class="energy-fill" id="energy-fill-mobile" style="width:100%"></div></div>
+</div>
+
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span>🏪</span> Level Up Learning
+  </div>
+
+  <div class="sidebar-student">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:42px;height:42px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-family:Nunito;font-size:14px;font-weight:800;color:var(--green-dark);flex-shrink:0" id="sb-avatar">AR</div>
+      <div>
+        <div style="font-family:Nunito;font-size:14px;font-weight:800" id="sb-name">Alex Rivera</div>
+        <div style="font-size:12px;color:var(--text-soft)" id="sb-grade">Grade 3 · Math</div>
+      </div>
+    </div>
+    <div class="sidebar-xp" id="sb-xp">15 XP</div>
+    <span style="font-family:Nunito;font-size:14px;font-weight:700;color:var(--amber)" id="sb-streak">5 🔥</span>
+    <div class="energy-wrap" style="margin-top:10px">
+      <div class="energy-label">
+        <span>Energy</span>
+        <span id="energy-text">10 / 10</span>
+      </div>
+      <div class="energy-track"><div class="energy-fill" id="energy-fill" style="width:100%"></div></div>
+    </div>
+  </div>
+
+  <button class="sidebar-nav-item active" id="nav-home" onclick="goTo('home')">
+    <span class="sidebar-nav-icon">🏪</span> Store home
+  </button>
+  <button class="sidebar-nav-item" id="nav-store" onclick="startSession()">
+    <span class="sidebar-nav-icon">▶</span> Play now
+  </button>
+  <button class="sidebar-nav-item" id="nav-progress" onclick="goTo('progress')">
+    <span class="sidebar-nav-icon">📊</span> My progress
+  </button>
+
+  <div style="margin-top:16px">
+    <div class="section-title" style="font-size:13px;margin-bottom:8px">Pick subject</div>
+    <div style="display:flex;flex-direction:column;gap:5px" id="sb-subjects">
+      <button class="subj-btn active" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'Math')">Math</button>
+      <button class="subj-btn" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'Science')">Science</button>
+      <button class="subj-btn" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'ELA')">ELA</button>
+      <button class="subj-btn" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'History')">History</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+
+
+<div class="energy-wrap">
+  <div class="energy-label">
+    <span>Energy</span>
+    <span id="energy-text">10 / 10</span>
+  </div>
+  <div class="energy-track"><div class="energy-fill" id="energy-fill" style="width:100%"></div></div>
+</div>
+
+<!-- ═══════ HOME SCREEN ═══════ -->
+<div id="screen-home" class="screen active">
+  <div style="margin-top:16px"></div>
+
+  <div class="card" style="display:flex;align-items:center;gap:12px;padding:14px">
+    <div style="width:46px;height:46px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-family:Nunito;font-size:15px;font-weight:800;color:var(--green-dark);flex-shrink:0" id="avatar">AR</div>
+    <div style="flex:1">
+      <div style="font-family:Nunito;font-size:16px;font-weight:800" id="student-name">Alex Rivera</div>
+      <div style="font-size:12px;color:var(--text-soft)" id="student-grade">Grade 3 · Math</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-family:Nunito;font-size:13px;color:var(--text-soft)">Streak</div>
+      <div style="font-family:Nunito;font-size:20px;font-weight:900;color:var(--amber)" id="streak-display">5 <span class="streak-flame streak-active">🔥</span></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="stat-correct">5</div><div class="stat-lbl">correct today</div></div>
+    <div class="stat"><div class="stat-val" id="stat-accuracy">100%</div><div class="stat-lbl">accuracy</div></div>
+    <div class="stat"><div class="stat-val" id="stat-sessions">1</div><div class="stat-lbl">sessions</div></div>
+  </div>
+
+  <div class="section-title">Pick a subject</div>
+  <div class="subject-row" id="subject-row">
+    <button class="subj-btn active" onclick="setSubject(this,'Math')">Math</button>
+    <button class="subj-btn" onclick="setSubject(this,'Science')">Science</button>
+    <button class="subj-btn" onclick="setSubject(this,'ELA')">ELA</button>
+    <button class="subj-btn" onclick="setSubject(this,'History')">History</button>
+  </div>
+
+  <button class="btn btn-green" onclick="checkBeforeSession()">Open the store!</button>
+  <button class="btn btn-soft" onclick="goTo('progress')">View progress</button>
+</div>
+
+<!-- ═══════ STORE SCREEN ═══════ -->
+<div id="screen-store" class="screen">
+  <div class="prog-wrap" style="margin-top:8px">
+    <div class="prog-label">
+      <span id="store-counter">Customer 1 of 5</span>
+      <span style="font-weight:700;color:var(--green)" id="store-cash">$10.00</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="store-prog" style="width:0%"></div></div>
+  </div>
+
+  <div class="customer-bubble" id="cust-bubble">
+    <div class="customer-name" id="cust-name">Customer arriving...</div>
+    <div class="customer-text" id="cust-text"></div>
+  </div>
+
+  <div class="card card-sm" id="store-q-card" style="margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:var(--text-soft)" id="store-q-meta"></span>
+      <span class="mode-badge mode-normal" id="store-mode">Normal</span>
+    </div>
+    <div style="font-family:Nunito;font-size:16px;font-weight:700" id="store-question">Loading...</div>
+  </div>
+
+  <div id="store-choices"></div>
+  <div id="store-feedback"></div>
+</div>
+
+<!-- ═══════ STOCKING SCREEN ═══════ -->
+<div id="screen-stock" class="screen">
+  <div class="truck-anim" style="text-align:center;padding:16px 0 8px">
+    <svg width="64" height="40" viewBox="0 0 64 40" fill="none">
+      <rect x="2" y="10" width="38" height="24" rx="4" fill="#FAEEDA" stroke="#F5A623" stroke-width="1.5"/>
+      <rect x="40" y="18" width="20" height="16" rx="3" fill="#FAC775" stroke="#F5A623" stroke-width="1.5"/>
+      <path d="M40 22h14l6 6v6H40V22z" fill="#EF9F27" opacity=".4"/>
+      <circle cx="12" cy="34" r="5" fill="#633806"/>
+      <circle cx="12" cy="34" r="3" fill="#FAEEDA"/>
+      <circle cx="50" cy="34" r="5" fill="#633806"/>
+      <circle cx="50" cy="34" r="3" fill="#FAEEDA"/>
+    </svg>
+    <div style="font-family:Nunito;font-size:18px;font-weight:800;color:var(--text);margin-top:6px">Delivery truck!</div>
+    <div style="font-size:13px;color:var(--text-soft);margin-top:3px">Time to stock the shelves</div>
+  </div>
+
+  <div class="delivery-banner" id="stock-banner">
+    <div class="delivery-title" id="stock-title">Counting the delivery</div>
+    <div class="delivery-body" id="stock-text">Loading...</div>
+  </div>
+
+  <div id="stock-choices"></div>
+  <div id="stock-feedback"></div>
+</div>
+
+<!-- ═══════ RESULT SCREEN ═══════ -->
+<div id="screen-result" class="screen">
+  <div class="result-big">
+    <div class="result-num" id="res-accuracy">100%</div>
+    <div class="result-sub">accuracy this session</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="res-correct">5</div><div class="stat-lbl">correct</div></div>
+    <div class="stat"><div class="stat-val" id="res-xp">+15</div><div class="stat-lbl">XP earned</div></div>
+    <div class="stat"><div class="stat-val" id="res-streak">5</div><div class="stat-lbl">streak</div></div>
+  </div>
+
+  <div class="card">
+    <div style="font-family:Nunito;font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px" id="res-title">Perfect round!</div>
+    <div style="font-size:13px;color:var(--text-soft);line-height:1.5" id="res-msg">You're on fire — keep that streak going!</div>
+  </div>
+
+  <button class="btn btn-green" onclick="startSession()">Play again</button>
+  <button class="btn btn-soft" onclick="goTo('home')">Back to store</button>
+</div>
+
+<!-- ═══════ PROGRESS SCREEN ═══════ -->
+<div id="screen-progress" class="screen">
+  <div class="section-title" style="margin-top:8px">Mastery map</div>
+  <div class="card">
+    <div id="mastery-list"></div>
+  </div>
+
+  <div class="section-title">Recent sessions</div>
+  <div class="card" id="session-history"></div>
+
+  <button class="btn btn-soft" onclick="goTo('home')">Back to store</button>
+</div>
+
+
+  <div class="nav-item" id="nav-store" onclick="startSession()">
+    <span class="nav-icon">▶</span><span>Play</span>
+  </div>
+  <div class="nav-item" id="nav-progress" onclick="goTo('progress')">
+    <span class="nav-icon">📊</span><span>Progress</span>
+  </div>
+</div>
+
+<script>
+const STUDENTS = [
+  {id:"STU001",name:"Alex Rivera",grade:"3",subject:"Math",xp:15,energy:10,streak:5}
+];
+
+const QUESTIONS = [
+  {id:"Q001",subject:"Math",grade:"3",difficulty:1,text:"What is 7 + 8?",choices:["A. 13","B. 15","C. 14","D. 16"],answer:"B",explanation:"7 + 8 = 15"},
+  {id:"Q002",subject:"Math",grade:"3",difficulty:2,text:"If you share 24 apples equally among 4 friends, how many does each get?",choices:["A. 4","B. 8","C. 6","D. 5"],answer:"C",explanation:"24 ÷ 4 = 6"},
+  {id:"Q003",subject:"Math",grade:"3",difficulty:1,text:"What is 5 × 3?",choices:["A. 8","B. 15","C. 12","D. 10"],answer:"B",explanation:"5 × 3 = 15"},
+  {id:"Q004",subject:"Math",grade:"3",difficulty:1,text:"What is 12 - 7?",choices:["A. 4","B. 6","C. 5","D. 3"],answer:"C",explanation:"12 - 7 = 5"},
+  {id:"Q005",subject:"Math",grade:"3",difficulty:2,text:"A bag has 3 red, 5 blue, 2 green marbles. What fraction are red?",choices:["A. 3/5","B. 3/8","C. 3/10","D. 1/3"],answer:"C",explanation:"3 out of 10 total = 3/10"},
+  {id:"Q006",subject:"Science",grade:"3",difficulty:1,text:"What do plants need to make their own food?",choices:["A. Dirt","B. Sunlight","C. Wind","D. Sand"],answer:"B",explanation:"Plants use sunlight for photosynthesis"},
+  {id:"Q007",subject:"ELA",grade:"3",difficulty:1,text:"What is the first letter of the alphabet?",choices:["A. B","B. C","C. A","D. D"],answer:"C",explanation:"A is the first letter"},
+  {id:"Q008",subject:"History",grade:"3",difficulty:1,text:"Who was the first president of the United States?",choices:["A. Lincoln","B. Jefferson","C. Adams","D. Washington"],answer:"D",explanation:"George Washington was the first president"},
+];
+
+const CUSTOMERS = [
+  {name:"Ms. Garcia",wants:[{item:"Apple",qty:2,price:0.50}],pays:2.00,concept:"multiplication + change"},
+  {name:"Jake",wants:[{item:"Juice",qty:1,price:1.75}],pays:2.00,concept:"making change"},
+  {name:"Mrs. Patel",wants:[{item:"Sandwich",qty:1,price:2.25},{item:"Apple",qty:1,price:0.50}],pays:5.00,concept:"addition + change"},
+  {name:"Tyler",wants:[{item:"Apple",qty:3,price:0.50}],pays:2.00,concept:"multiplication"},
+  {name:"Sofia",wants:[{item:"Juice",qty:2,price:1.75},{item:"Apple",qty:1,price:0.50}],pays:5.00,concept:"multi-item + change"},
+];
+
+const STOCK_TASKS = [
+  {title:"Count the apple boxes",text:"Each box holds 6 apples. 2 boxes arrived. How many apples total?",choices:["10 apples","12 apples","8 apples","14 apples"],answer:1,explain:"2 × 6 = 12 apples"},
+  {title:"Price the stock",text:"Apples cost $0.50 each. You stocked 12. What is the total value?",choices:["$5.00","$7.00","$6.00","$4.50"],answer:2,explain:"12 × $0.50 = $6.00"},
+  {title:"Shelf space",text:"The shelf holds 10 sandwiches. You have 3. How many from the delivery fit?",choices:["8","6","7","5"],answer:2,explain:"10 - 3 = 7 sandwiches fit"},
+];
+
+let state = {
+  student: STUDENTS[0],
+  subject: "Math",
+  cash: 10.00,
+  sessionCorrect: 0,
+  sessionTotal: 0,
+  sessionXpStart: 15,
+  custIdx: 0,
+  stockIdx: 0,
+  stockXp: 0,
+  answered: false,
+  history: [{acc:100,correct:5,total:5,xp:15}],
+  mastery: {Math:72,Science:45,ELA:58,History:30},
+  todayCorrect: 5,
+  todaySessions: 1,
+};
+
+function fmt(n){ return "$"+n.toFixed(2); }
+
+function goTo(screen) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-"+screen).classList.add("active");
+  ["home","progress"].forEach(id => {
+    const el = document.getElementById("nav-"+id);
+    if(el) el.classList.toggle("active", id === screen);
+    const mel = document.getElementById("mob-nav-"+id);
+    if(mel) mel.classList.toggle("active", id === screen);
+  });
+  const ns = document.getElementById("nav-store");
+  if(ns) ns.classList.remove("active");
+  const mns = document.getElementById("mob-nav-store");
+  if(mns) mns.classList.remove("active");
+  if(screen==="progress") renderProgress();
+  updateTopBar();
+}
+
+function updateTopBar() {
+  const s = state.student;
+  const pct = (s.energy/10)*100;
+  const color = pct > 50 ? "#1D9E75" : pct > 20 ? "#F5A623" : "#E24B4A";
+  const title = s.energy <= 0 ? "Delivery time!" : s.energy <= 3 ? "Almost out of energy..." : "Corner Store";
+
+  // Sidebar
+  const ef = document.getElementById("energy-fill");
+  if(ef){ ef.style.width = pct+"%"; ef.style.background = color; }
+  const et = document.getElementById("energy-text");
+  if(et) et.textContent = s.energy+" / 10";
+  const sbxp = document.getElementById("sb-xp");
+  if(sbxp) sbxp.textContent = s.xp+" XP";
+  const sbst = document.getElementById("sb-streak");
+  if(sbst) sbst.textContent = s.streak+" 🔥";
+
+  // Mobile
+  const efm = document.getElementById("energy-fill-mobile");
+  if(efm){ efm.style.width = pct+"%"; efm.style.background = color; }
+  const etm = document.getElementById("energy-text-mobile");
+  if(etm) etm.textContent = s.energy+" / 10";
+  const txpm = document.getElementById("top-xp-mobile");
+  if(txpm) txpm.textContent = s.xp+" XP";
+  const ttm = document.getElementById("top-title-mobile");
+  if(ttm) ttm.textContent = title;
+}
+
+function setSubject(btn, subj) {
+  document.querySelectorAll(".subj-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  state.subject = subj;
+  state.student.subject = subj;
+}
+
+function checkBeforeSession() {
+  if(state.student.energy <= 3) {
+    goTo("stock");
+    state.stockIdx = 0;
+    state.stockXp = 0;
+    showStockTask();
+  } else {
+    startSession();
+  }
+}
+
+function startSession() {
+  state.custIdx = 0;
+  state.sessionCorrect = 0;
+  state.sessionTotal = 0;
+  state.sessionXpStart = state.student.xp;
+  state.cash = 10.00;
+  goTo("store");
+  document.getElementById("nav-store").classList.add("active");
+  showCustomer();
+}
+
+function showCustomer() {
+  state.answered = false;
+  const c = CUSTOMERS[state.custIdx % CUSTOMERS.length];
+  const total = c.wants.reduce((s,w) => s + w.qty*w.price, 0);
+  const change = parseFloat((c.pays - total).toFixed(2));
+  state.currentTotal = total;
+  state.currentChange = change;
+  state.currentPays = c.pays;
+  state.currentConcept = c.concept;
+
+  document.getElementById("store-counter").textContent = "Customer "+(state.custIdx+1)+" of 5";
+  document.getElementById("store-cash").textContent = fmt(state.cash);
+  document.getElementById("store-prog").style.width = (state.custIdx/5*100)+"%";
+  document.getElementById("cust-name").textContent = c.name;
+
+  const orderStr = c.wants.map(w => w.qty+" "+w.item+(w.qty>1?"s":"")+" ("+fmt(w.price)+" each)").join(" + ");
+  document.getElementById("cust-text").textContent = "\"Hi! I\'d like "+orderStr+". Here\'s "+fmt(c.pays)+".\"";
+
+  const mode = state.student.energy <= 0 ? "Recovery" : state.student.energy <= 3 ? "Easy mode" : "Normal";
+  const badge = document.getElementById("store-mode");
+  badge.textContent = mode;
+  badge.className = "mode-badge " + (mode==="Normal"?"mode-normal":mode==="Easy mode"?"mode-easy":"mode-recovery");
+
+  document.getElementById("store-q-meta").textContent = "Total: "+fmt(total)+" · Paid: "+fmt(c.pays);
+  document.getElementById("store-question").textContent = "How much change does "+c.name.split(" ")[0]+" get back?";
+
+  const wrong1 = parseFloat((change+0.25).toFixed(2));
+  const wrong2 = parseFloat((change-0.25>=0?change-0.25:change+0.50).toFixed(2));
+  const wrong3 = parseFloat((total+0.50).toFixed(2));
+  const opts = shuffle([
+    {val:change,label:fmt(change),correct:true},
+    {val:wrong1,label:fmt(wrong1),correct:false},
+    {val:wrong2,label:fmt(wrong2),correct:false},
+    {val:wrong3,label:fmt(wrong3),correct:false},
+  ]);
+
+  const div = document.getElementById("store-choices");
+  div.innerHTML = "";
+  opts.forEach(o => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.textContent = o.label;
+    btn.onclick = () => storeAnswer(btn, o.correct, o.val);
+    div.appendChild(btn);
+  });
+  document.getElementById("store-feedback").innerHTML = "";
+}
+
+function storeAnswer(btn, correct, val) {
+  if(state.answered) return;
+  state.answered = true;
+  state.sessionTotal++;
+
+  document.querySelectorAll(".choice").forEach(b => {
+    const v = parseFloat(b.textContent.replace("$",""));
+    if(Math.abs(v-state.currentChange)<0.01) b.classList.add("correct");
+    else if(b===btn && !correct) b.classList.add("wrong");
+    else b.classList.add("reveal");
+  });
+
+  const s = state.student;
+  if(correct) {
+    s.xp += 2; s.energy = Math.min(s.energy+1,10); s.streak++;
+    state.cash += state.currentTotal;
+    state.sessionCorrect++;
+    state.todayCorrect++;
+    if(s.streak%5===0) { s.xp+=5; showCoinPop(); }
+    state.mastery[state.subject] = Math.min(100, (state.mastery[state.subject]||50)+3);
+  } else {
+    s.energy = Math.max(s.energy-1,0);
+    s.streak = 0;
+    state.mastery[state.subject] = Math.max(0, (state.mastery[state.subject]||50)-1);
+  }
+  updateTopBar();
+
+  const fb = document.getElementById("store-feedback");
+  if(correct) {
+    fb.innerHTML = \`<div class="feedback good"><div class="fb-title">Correct! +\${fmt(state.currentTotal)} earned</div><div class="fb-body">\${fmt(state.currentPays)} - \${fmt(state.currentTotal)} = \${fmt(state.currentChange)} change. \${state.cust} is happy!</div></div>\`;
+  } else {
+    fb.innerHTML = \`<div class="feedback bad"><div class="fb-title">Not quite!</div><div class="fb-body">Correct change was \${fmt(state.currentChange)}. \${fmt(state.currentPays)} minus \${fmt(state.currentTotal)} = \${fmt(state.currentChange)}.</div></div>\`;
+  }
+  document.getElementById("store-cash").textContent = fmt(state.cash);
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "btn "+(state.custIdx>=4?"btn-amber":"btn-green");
+  nextBtn.style.marginTop = "6px";
+  nextBtn.textContent = state.student.energy<=0 ? "Delivery time!" : state.custIdx>=4 ? "Close the store!" : "Next customer";
+  nextBtn.onclick = () => {
+    state.custIdx++;
+    if(state.student.energy<=0) { goToStock(); }
+    else if(state.custIdx>=5) { showResult(); }
+    else { showCustomer(); }
+  };
+  fb.appendChild(nextBtn);
+}
+
+function goToStock() {
+  goTo("stock");
+  state.stockIdx = 0;
+  state.stockXp = 0;
+  showStockTask();
+}
+
+function showStockTask() {
+  state.answered = false;
+  if(state.stockIdx >= STOCK_TASKS.length) { finishStocking(); return; }
+  const t = STOCK_TASKS[state.stockIdx];
+  document.getElementById("stock-title").textContent = t.title;
+  document.getElementById("stock-text").textContent = t.text;
+  document.getElementById("stock-feedback").innerHTML = "";
+
+  const div = document.getElementById("stock-choices");
+  div.innerHTML = t.choices.map((c,i) =>
+    \`<button class="choice" onclick="stockAnswer(this,\${i})">\${c}</button>\`
+  ).join("");
+}
+
+function stockAnswer(btn, idx) {
+  if(state.answered) return;
+  state.answered = true;
+  const t = STOCK_TASKS[state.stockIdx];
+  const correct = idx===t.answer;
+
+  document.querySelectorAll("#stock-choices .choice").forEach((b,i) => {
+    if(i===t.answer) b.classList.add("correct");
+    else if(b===btn && !correct) b.classList.add("wrong");
+    else b.classList.add("reveal");
+  });
+
+  if(correct) { state.stockXp+=8; state.student.energy=Math.min(state.student.energy+2,10); }
+  else { state.stockXp+=3; state.student.energy=Math.min(state.student.energy+1,10); }
+  updateTopBar();
+
+  const fb = document.getElementById("stock-feedback");
+  if(correct) {
+    fb.innerHTML = \`<div class="feedback good"><div class="fb-title">Shelf stocked! +8 XP</div><div class="fb-body">\${t.explain}</div></div>\`;
+  } else {
+    fb.innerHTML = \`<div class="feedback bad"><div class="fb-title">Let\'s fix that</div><div class="fb-body">\${t.explain}</div></div>\`;
+  }
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "btn btn-green";
+  nextBtn.style.marginTop="6px";
+  nextBtn.textContent = state.stockIdx>=STOCK_TASKS.length-1 ? "Shelves done! Back to customers" : "Next shelf";
+  nextBtn.onclick = () => { state.stockIdx++; showStockTask(); };
+  fb.appendChild(nextBtn);
+}
+
+function finishStocking() {
+  state.student.xp += state.stockXp;
+  updateTopBar();
+  const fb = document.getElementById("stock-feedback");
+  fb.innerHTML = \`<div class="feedback good"><div class="fb-title">All stocked! +\${state.stockXp} XP</div><div class="fb-body">Energy restored. Customers are waiting!</div></div>\`;
+  const btn = document.createElement("button");
+  btn.className = "btn btn-green";
+  btn.style.marginTop="6px";
+  btn.textContent = "Back to customers!";
+  btn.onclick = () => startSession();
+  fb.appendChild(btn);
+}
+
+function showResult() {
+  const acc = state.sessionTotal > 0 ? Math.round(state.sessionCorrect/state.sessionTotal*100) : 0;
+  const xpEarned = state.student.xp - state.sessionXpStart;
+  document.getElementById("res-accuracy").textContent = acc+"%";
+  document.getElementById("res-correct").textContent = state.sessionCorrect;
+  document.getElementById("res-xp").textContent = "+"+xpEarned;
+  document.getElementById("res-streak").textContent = state.student.streak;
+
+  const msgs = [
+    ["Keep going!","Every question makes you smarter."],
+    ["Good effort!","You\'re getting better every session."],
+    ["Nice work!","Keep that momentum going!"],
+    ["Amazing!","You really know this stuff."],
+    ["Perfect round!","You\'re on fire — keep that streak going!"],
+  ];
+  const idx = acc===100?4:acc>=80?3:acc>=60?2:acc>=40?1:0;
+  document.getElementById("res-title").textContent = msgs[idx][0];
+  document.getElementById("res-msg").textContent = msgs[idx][1];
+
+  state.history.unshift({acc,correct:state.sessionCorrect,total:state.sessionTotal,xp:xpEarned});
+  state.todaySessions++;
+  document.getElementById("stat-correct").textContent = state.todayCorrect;
+  document.getElementById("stat-accuracy").textContent = acc+"%";
+  document.getElementById("stat-sessions").textContent = state.todaySessions;
+  document.getElementById("streak-display").innerHTML = state.student.streak + \` <span class="streak-flame \${state.student.streak>0?"streak-active":""}">🔥</span>\`;
+
+  goTo("result");
+}
+
+function renderProgress() {
+  const ml = document.getElementById("mastery-list");
+  ml.innerHTML = "";
+  Object.entries(state.mastery).forEach(([subj,pct]) => {
+    const color = pct>=70?"#1D9E75":pct>=40?"#F5A623":"#E24B4A";
+    const textColor = pct>=70?"#085041":pct>=40?"#7a4500":"#791F1F";
+    ml.innerHTML += \`<div class="mastery-row">
+      <span class="mastery-subj">\${subj}</span>
+      <div class="mastery-track"><div class="mastery-fill" style="width:\${pct}%;background:\${color}"></div></div>
+      <span class="mastery-pct" style="color:\${textColor}">\${pct}%</span>
+    </div>\`;
+  });
+
+  const sh = document.getElementById("session-history");
+  sh.innerHTML = "";
+  state.history.slice(0,5).forEach((s,i) => {
+    const color = s.acc>=80?"var(--green-dark)":s.acc>=60?"#7a4500":"#791F1F";
+    sh.innerHTML += \`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;\${i<state.history.length-1?"border-bottom:1px solid var(--border)":""}">
+      <span style="font-size:13px;color:var(--text-soft)">Session \${state.history.length-i}</span>
+      <span style="font-size:13px;color:var(--text)">\${s.correct}/\${s.total} correct</span>
+      <span style="font-size:13px;font-weight:700;color:var(--green)">+\${s.xp} XP</span>
+      <span style="font-size:13px;font-weight:700;color:\${color}">\${s.acc}%</span>
+    </div>\`;
+  });
+}
+
+function showCoinPop() {
+  const el = document.createElement("div");
+  el.className = "coin-pop";
+  el.textContent = "🌟";
+  el.style.left = (Math.random()*60+20)+"%";
+  el.style.top = "40%";
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+function shuffle(arr) {
+  for(let i=arr.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+updateTopBar();
+document.getElementById("avatar").textContent = state.student.name.split(" ").map(n=>n[0]).join("");
+document.getElementById("student-name").textContent = state.student.name;
+document.getElementById("student-grade").textContent = "Grade "+state.student.grade+" · "+state.student.subject;
+document.getElementById("streak-display").innerHTML = state.student.streak + \` <span class="streak-flame streak-active">🔥</span>\`;
+</script>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="mobile-bottom-nav">
+  <div class="nav-item active" id="mob-nav-home" onclick="goTo('home')">
+    <span class="nav-icon">🏪</span><span>Store</span>
+  </div>
+  <div class="nav-item" id="mob-nav-store" onclick="startSession()">
+    <span class="nav-icon">▶</span><span>Play</span>
+  </div>
+  <div class="nav-item" id="mob-nav-progress" onclick="goTo('progress')">
+    <span class="nav-icon">📊</span><span>Progress</span>
+  </div>
+</div>
+
+</div><!-- end main-content -->
+</div><!-- end app-shell -->
+</body>
+</html>
