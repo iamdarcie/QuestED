@@ -16,14 +16,13 @@
   --purple-light: #EEEDFE;
   --red: #E24B4A;
   --red-light: #FCEBEB;
-  --bg: #F0EDE6;
+  --bg: #F7F6F2;
   --card: #FFFFFF;
   --text: #1a1a1a;
   --text-soft: #6b7280;
   --border: rgba(0,0,0,0.08);
   --radius: 16px;
   --radius-sm: 10px;
-  --sidebar-w: 280px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -31,133 +30,57 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-}
-
-/* ── LAYOUT WRAPPER ── */
-.app-shell {
-  display: flex;
-  min-height: 100vh;
-  max-width: 1200px;
+  max-width: 420px;
   margin: 0 auto;
+  padding: 0 0 80px;
 }
+h1,h2,h3,.big { font-family: "Nunito", sans-serif; }
 
-/* ── SIDEBAR (desktop only) ── */
-.sidebar {
-  width: var(--sidebar-w);
-  flex-shrink: 0;
-  background: var(--card);
-  border-right: 1px solid var(--border);
-  padding: 28px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
-.sidebar-logo {
-  font-family: "Nunito", sans-serif;
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--green);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.sidebar-student {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  margin-bottom: 8px;
-  border: 1px solid var(--border);
-}
-.sidebar-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 700;
-  font-family: "Nunito", sans-serif;
-  color: var(--text-soft);
-  cursor: pointer;
-  transition: all .15s;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-}
-.sidebar-nav-item:hover { background: var(--bg); color: var(--text); }
-.sidebar-nav-item.active { background: var(--green-light); color: var(--green-dark); }
-.sidebar-nav-icon { font-size: 18px; width: 24px; text-align: center; }
-.sidebar-energy { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
-.sidebar-xp {
-  background: var(--amber-light);
-  color: #92570a;
-  padding: 5px 12px;
-  border-radius: 99px;
-  font-size: 13px;
-  font-weight: 700;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
-/* ── MAIN CONTENT ── */
-.main-content {
-  flex: 1;
-  min-width: 0;
-  padding: 28px 32px;
-  max-width: 720px;
-}
-
-/* ── MOBILE TOP BAR (hidden on desktop) ── */
-.mobile-topbar { display: none; }
-.mobile-bottom-nav { display: none; }
-
-/* ── SCREENS ── */
-.screen { display: none; animation: fadeUp .25s ease; }
+/* SCREENS */
+.screen { display: none; padding: 20px 16px; animation: fadeUp .25s ease; }
 .screen.active { display: block; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-/* ── PAGE HEADER ── */
-.page-header {
-  margin-bottom: 24px;
-}
-.page-title {
+/* TOP BAR */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 16px 0;
   font-family: "Nunito", sans-serif;
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--text);
-  margin-bottom: 4px;
 }
-.page-sub { font-size: 14px; color: var(--text-soft); }
+.topbar-title { font-size: 18px; font-weight: 800; color: var(--text); }
+.topbar-xp {
+  background: var(--amber-light); color: #92570a;
+  padding: 5px 12px; border-radius: 99px;
+  font-size: 13px; font-weight: 700;
+}
 
-/* ── CARDS ── */
+/* ENERGY BAR */
+.energy-wrap { padding: 12px 16px 0; }
+.energy-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-soft); margin-bottom:5px; }
+.energy-track { background: #e5e3dc; border-radius: 99px; height: 10px; overflow: hidden; }
+.energy-fill {
+  height: 100%; border-radius: 99px;
+  background: var(--green);
+  transition: width .5s cubic-bezier(.4,0,.2,1), background .3s;
+}
+
+/* CARDS */
 .card {
   background: var(--card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 20px;
-  margin-bottom: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
 }
-.card-sm { padding: 14px; border-radius: var(--radius-sm); }
+.card-sm { padding: 12px; border-radius: var(--radius-sm); }
 
-/* ── STATS ROW ── */
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
-.stat { background: var(--card); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 16px 12px; text-align: center; }
-.stat-val { font-family: "Nunito", sans-serif; font-size: 26px; font-weight: 800; color: var(--text); }
-.stat-lbl { font-size: 12px; color: var(--text-soft); margin-top: 3px; }
+/* STATS ROW */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.stat { background: var(--card); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 12px 8px; text-align: center; }
+.stat-val { font-family: "Nunito", sans-serif; font-size: 22px; font-weight: 800; color: var(--text); }
+.stat-lbl { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
 
-/* ── ENERGY BAR ── */
-.energy-wrap { margin-bottom: 6px; }
-.energy-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-soft); margin-bottom: 5px; }
-.energy-track { background: #e5e3dc; border-radius: 99px; height: 10px; overflow: hidden; }
-.energy-fill { height: 100%; border-radius: 99px; background: var(--green); transition: width .5s cubic-bezier(.4,0,.2,1), background .3s; }
-
-/* ── BUTTONS ── */
+/* BUTTONS */
 .btn {
   width: 100%; padding: 15px;
   border-radius: var(--radius-sm);
@@ -171,34 +94,34 @@ body {
 .btn-soft { background: var(--card); color: var(--text); border: 1px solid var(--border); }
 .btn-amber { background: var(--amber); color: #fff; }
 
-/* ── SUBJECT PILLS ── */
-.subject-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+/* SUBJECT PILLS */
+.subject-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .subj-btn {
-  padding: 9px 18px; border-radius: 99px;
+  padding: 8px 16px; border-radius: 99px;
   border: 1.5px solid var(--border);
   background: var(--card); color: var(--text-soft);
-  font-size: 14px; font-weight: 700; font-family: "Nunito", sans-serif;
+  font-size: 13px; font-weight: 700; font-family: "Nunito", sans-serif;
   cursor: pointer; transition: all .15s;
 }
 .subj-btn.active { background: var(--green); color: #fff; border-color: var(--green); }
 
-/* ── CUSTOMER BUBBLE ── */
+/* CUSTOMER BUBBLE */
 .customer-bubble {
   background: var(--purple-light);
   border: 1.5px solid var(--purple);
-  border-radius: var(--radius); padding: 16px;
-  margin-bottom: 14px;
+  border-radius: var(--radius); padding: 14px;
+  margin-bottom: 12px;
 }
-.customer-name { font-family:"Nunito",sans-serif; font-size:13px; font-weight:800; color:#3C3489; margin-bottom:5px; }
-.customer-text { font-size: 15px; color: #26215C; line-height: 1.6; }
+.customer-name { font-family:"Nunito",sans-serif; font-size:13px; font-weight:800; color:#3C3489; margin-bottom:4px; }
+.customer-text { font-size: 14px; color: #26215C; line-height: 1.5; }
 
-/* ── CHOICES ── */
+/* CHOICE BUTTONS */
 .choice {
-  width: 100%; padding: 15px 18px;
+  width: 100%; padding: 14px 16px;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--border);
   background: var(--card); color: var(--text);
-  font-size: 15px; font-weight: 600; font-family: "Nunito Sans", sans-serif;
+  font-size: 14px; font-weight: 600; font-family: "Nunito Sans", sans-serif;
   text-align: left; cursor: pointer;
   transition: all .15s; margin-bottom: 8px; display: block;
 }
@@ -207,173 +130,107 @@ body {
 .choice.wrong { background: var(--red-light); border-color: var(--red); color: #791F1F; pointer-events:none; }
 .choice.reveal { background: #F7F6F2; border-color: #ddd; color: var(--text-soft); pointer-events:none; }
 
-/* ── FEEDBACK ── */
-.feedback { border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; border: 1.5px solid; }
+/* FEEDBACK */
+.feedback {
+  border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px;
+  border: 1.5px solid;
+}
 .feedback.good { background: var(--green-light); border-color: var(--green); }
 .feedback.bad { background: var(--red-light); border-color: var(--red); }
-.feedback.good .fb-title { color: var(--green-dark); font-family:"Nunito",sans-serif; font-size:16px; font-weight:800; margin-bottom:5px; }
-.feedback.bad .fb-title { color: #791F1F; font-family:"Nunito",sans-serif; font-size:16px; font-weight:800; margin-bottom:5px; }
-.feedback .fb-body { font-size: 14px; line-height: 1.5; }
+.feedback.good .fb-title { color: var(--green-dark); font-family:"Nunito",sans-serif; font-size:15px; font-weight:800; margin-bottom:4px; }
+.feedback.bad .fb-title { color: #791F1F; font-family:"Nunito",sans-serif; font-size:15px; font-weight:800; margin-bottom:4px; }
+.feedback .fb-body { font-size: 13px; line-height: 1.5; }
 .feedback.good .fb-body { color: #0F6E56; }
 .feedback.bad .fb-body { color: #A32D2D; }
 
-/* ── DELIVERY BANNER ── */
+/* DELIVERY BANNER */
 .delivery-banner {
   background: var(--amber-light); border: 1.5px solid var(--amber);
-  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+  border-radius: var(--radius); padding: 14px; margin-bottom: 12px;
 }
-.delivery-title { font-family:"Nunito",sans-serif; font-size:15px; font-weight:800; color: #7a4500; margin-bottom:5px; }
-.delivery-body { font-size: 14px; color: #92570a; line-height: 1.5; }
+.delivery-title { font-family:"Nunito",sans-serif; font-size:14px; font-weight:800; color: #7a4500; margin-bottom:4px; }
+.delivery-body { font-size: 13px; color: #92570a; line-height: 1.5; }
 
-/* ── PROGRESS BAR ── */
-.prog-wrap { margin-bottom: 12px; }
-.prog-label { display:flex; justify-content:space-between; font-size:13px; color:var(--text-soft); margin-bottom:5px; font-weight:600; }
-.prog-track { background:#e5e3dc; border-radius:99px; height:8px; overflow:hidden; }
+/* SHELF ROW */
+.shelf-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; background: var(--bg);
+  border-radius: var(--radius-sm); margin-bottom:8px;
+  border: 1px solid var(--border);
+}
+.shelf-icon { width:36px;height:36px; border-radius:8px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.shelf-info { flex:1; }
+.shelf-name { font-size:13px; font-weight:700; color:var(--text); }
+.shelf-detail { font-size:11px; color:var(--text-soft); margin-top:1px; }
+.shelf-bar { height:5px; border-radius:99px; margin-top:4px; }
+
+/* PROGRESS BAR SMALL */
+.prog-wrap { margin-bottom: 10px; }
+.prog-label { display:flex; justify-content:space-between; font-size:12px; color:var(--text-soft); margin-bottom:4px; }
+.prog-track { background:#e5e3dc; border-radius:99px; height:7px; overflow:hidden; }
 .prog-fill { height:100%; border-radius:99px; background:var(--green); transition:width .4s ease; }
 
-/* ── MASTERY ── */
-.mastery-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+/* MASTERY ROWS */
+.mastery-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
 .mastery-row:last-child { border-bottom:none; }
-.mastery-subj { font-size:14px; font-weight:700; color:var(--text); width:90px; flex-shrink:0; }
-.mastery-track { flex:1; background:#e5e3dc; border-radius:99px; height:8px; overflow:hidden; }
+.mastery-subj { font-size:13px; font-weight:600; color:var(--text); width:80px; flex-shrink:0; }
+.mastery-track { flex:1; background:#e5e3dc; border-radius:99px; height:7px; overflow:hidden; }
 .mastery-fill { height:100%; border-radius:99px; transition:width .5s; }
-.mastery-pct { font-size:13px; font-weight:700; width:38px; text-align:right; flex-shrink:0; }
+.mastery-pct { font-size:12px; font-weight:700; width:34px; text-align:right; flex-shrink:0; }
 
-/* ── RESULT ── */
-.result-big { text-align:center; padding: 28px 16px 20px; }
-.result-num { font-family:"Nunito",sans-serif; font-size:64px; font-weight:900; color:var(--green); line-height:1; }
-.result-sub { font-size:15px; color:var(--text-soft); margin-top:8px; }
+/* RESULT SCREEN */
+.result-big { text-align:center; padding: 24px 16px 16px; }
+.result-num { font-family:"Nunito",sans-serif; font-size:56px; font-weight:900; color:var(--green); line-height:1; }
+.result-sub { font-size:14px; color:var(--text-soft); margin-top:6px; }
 
-/* ── MODE BADGE ── */
-.mode-badge { display:inline-block; padding:4px 12px; border-radius:99px; font-size:12px; font-weight:700; font-family:"Nunito",sans-serif; }
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:420px;
+  background: var(--card); border-top: 1px solid var(--border);
+  display: flex; padding: 10px 0 14px;
+}
+.nav-item {
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+  font-size:11px; font-weight:700; font-family:"Nunito",sans-serif;
+  color: var(--text-soft); cursor:pointer; transition: color .15s;
+}
+.nav-item.active { color: var(--green); }
+.nav-icon { font-size:20px; }
+
+/* SECTION TITLE */
+.section-title { font-family:"Nunito",sans-serif; font-size:16px; font-weight:800; color:var(--text); margin-bottom:10px; }
+
+/* MODE BADGE */
+.mode-badge {
+  display:inline-block; padding:3px 10px; border-radius:99px;
+  font-size:11px; font-weight:700; font-family:"Nunito",sans-serif;
+}
 .mode-normal { background:var(--green-light); color:var(--green-dark); }
 .mode-easy { background:var(--amber-light); color:#7a4500; }
 .mode-recovery { background:var(--red-light); color:#791F1F; }
 
-/* ── SECTION TITLE ── */
-.section-title { font-family:"Nunito",sans-serif; font-size:17px; font-weight:800; color:var(--text); margin-bottom:12px; }
-
-/* ── SHELF ── */
-.shelf-row { display:flex; align-items:center; gap:10px; padding:10px; background:var(--bg); border-radius:var(--radius-sm); margin-bottom:8px; border:1px solid var(--border); }
-.shelf-icon { width:38px;height:38px; border-radius:8px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-.shelf-info { flex:1; }
-.shelf-name { font-size:13px; font-weight:700; color:var(--text); }
-.shelf-detail { font-size:11px; color:var(--text-soft); margin-top:1px; }
-
-/* ── ANIMATIONS ── */
+/* TRUCK ANIMATION */
 @keyframes truckIn { from { transform:translateX(60px); opacity:0; } to { transform:translateX(0); opacity:1; } }
 .truck-anim { animation: truckIn .5s ease; }
+
+/* STREAK FLAME */
+.streak-flame { display:inline-block; }
 @keyframes flicker { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.1)} }
 .streak-active { animation: flicker .6s ease-in-out infinite; }
+
+/* COIN POP */
 @keyframes coinPop { 0%{transform:scale(0) translateY(0);opacity:1} 80%{transform:scale(1.2) translateY(-30px);opacity:1} 100%{transform:scale(1) translateY(-40px);opacity:0} }
-.coin-pop { position:fixed; font-size:32px; pointer-events:none; animation: coinPop .8s ease forwards; z-index:999; }
-
-/* ════════════════════════════
-   MOBILE BREAKPOINT
-   ════════════════════════════ */
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main-content { padding: 16px 14px 80px; max-width: 100%; }
-  .app-shell { display: block; }
-
-  .mobile-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px 0;
-    background: var(--bg);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .mobile-topbar-title { font-family:"Nunito",sans-serif; font-size:17px; font-weight:900; color:var(--text); }
-  .mobile-xp { background:var(--amber-light); color:#92570a; padding:4px 11px; border-radius:99px; font-size:12px; font-weight:700; }
-
-  .mobile-energy { padding: 10px 16px 4px; background: var(--bg); position: sticky; top: 46px; z-index: 9; }
-
-  .mobile-bottom-nav {
-    display: flex;
-    position: fixed; bottom:0; left:0; right:0;
-    background: var(--card); border-top: 1px solid var(--border);
-    padding: 10px 0 14px; z-index: 100;
-  }
-  .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:11px; font-weight:700; font-family:"Nunito",sans-serif; color:var(--text-soft); cursor:pointer; transition:color .15s; }
-  .nav-item.active { color: var(--green); }
-  .nav-icon { font-size:20px; }
-
-  .page-title { font-size: 22px; }
-  .result-num { font-size: 52px; }
-}
+.coin-pop { position:fixed; font-size:24px; pointer-events:none; animation: coinPop .8s ease forwards; z-index:999; }
 </style>
 </head>
 <body>
 
-<!-- MOBILE TOP BAR -->
-<div class="mobile-topbar">
-  <div class="mobile-topbar-title" id="top-title-mobile">Corner Store</div>
-  <div class="mobile-xp" id="top-xp-mobile">15 XP</div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title" id="top-title">Corner Store</div>
+  <div class="topbar-xp" id="top-xp">15 XP</div>
 </div>
-<div class="mobile-energy">
-  <div class="energy-label">
-    <span>Energy</span>
-    <span id="energy-text-mobile">10 / 10</span>
-  </div>
-  <div class="energy-track"><div class="energy-fill" id="energy-fill-mobile" style="width:100%"></div></div>
-</div>
-
-<div class="app-shell">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-logo">
-    <span>🏪</span> Level Up Learning
-  </div>
-
-  <div class="sidebar-student">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <div style="width:42px;height:42px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-family:Nunito;font-size:14px;font-weight:800;color:var(--green-dark);flex-shrink:0" id="sb-avatar">AR</div>
-      <div>
-        <div style="font-family:Nunito;font-size:14px;font-weight:800" id="sb-name">Alex Rivera</div>
-        <div style="font-size:12px;color:var(--text-soft)" id="sb-grade">Grade 3 · Math</div>
-      </div>
-    </div>
-    <div class="sidebar-xp" id="sb-xp">15 XP</div>
-    <span style="font-family:Nunito;font-size:14px;font-weight:700;color:var(--amber)" id="sb-streak">5 🔥</span>
-    <div class="energy-wrap" style="margin-top:10px">
-      <div class="energy-label">
-        <span>Energy</span>
-        <span id="energy-text">10 / 10</span>
-      </div>
-      <div class="energy-track"><div class="energy-fill" id="energy-fill" style="width:100%"></div></div>
-    </div>
-  </div>
-
-  <button class="sidebar-nav-item active" id="nav-home" onclick="goTo('home')">
-    <span class="sidebar-nav-icon">🏪</span> Store home
-  </button>
-  <button class="sidebar-nav-item" id="nav-store" onclick="startSession()">
-    <span class="sidebar-nav-icon">▶</span> Play now
-  </button>
-  <button class="sidebar-nav-item" id="nav-progress" onclick="goTo('progress')">
-    <span class="sidebar-nav-icon">📊</span> My progress
-  </button>
-
-  <div style="margin-top:16px">
-    <div class="section-title" style="font-size:13px;margin-bottom:8px">Pick subject</div>
-    <div style="display:flex;flex-direction:column;gap:5px" id="sb-subjects">
-      <button class="subj-btn active" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'Math')">Math</button>
-      <button class="subj-btn" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'Science')">Science</button>
-      <button class="subj-btn" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'ELA')">ELA</button>
-      <button class="subj-btn" style="width:100%;text-align:left;border-radius:8px" onclick="setSubject(this,'History')">History</button>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="main-content">
-
-
-
 <div class="energy-wrap">
   <div class="energy-label">
     <span>Energy</span>
@@ -503,7 +360,11 @@ body {
   <button class="btn btn-soft" onclick="goTo('home')">Back to store</button>
 </div>
 
-
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="goTo('home')">
+    <span class="nav-icon">🏪</span><span>Store</span>
+  </div>
   <div class="nav-item" id="nav-store" onclick="startSession()">
     <span class="nav-icon">▶</span><span>Play</span>
   </div>
@@ -565,44 +426,24 @@ function goTo(screen) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById("screen-"+screen).classList.add("active");
   ["home","progress"].forEach(id => {
-    const el = document.getElementById("nav-"+id);
-    if(el) el.classList.toggle("active", id === screen);
-    const mel = document.getElementById("mob-nav-"+id);
-    if(mel) mel.classList.toggle("active", id === screen);
+    document.getElementById("nav-"+id)?.classList.toggle("active", id === screen);
   });
-  const ns = document.getElementById("nav-store");
-  if(ns) ns.classList.remove("active");
-  const mns = document.getElementById("mob-nav-store");
-  if(mns) mns.classList.remove("active");
+  document.getElementById("nav-store").classList.remove("active");
   if(screen==="progress") renderProgress();
   updateTopBar();
 }
 
 function updateTopBar() {
   const s = state.student;
+  document.getElementById("top-xp").textContent = s.xp + " XP";
+  document.getElementById("energy-text").textContent = s.energy + " / 10";
   const pct = (s.energy/10)*100;
-  const color = pct > 50 ? "#1D9E75" : pct > 20 ? "#F5A623" : "#E24B4A";
-  const title = s.energy <= 0 ? "Delivery time!" : s.energy <= 3 ? "Almost out of energy..." : "Corner Store";
-
-  // Sidebar
-  const ef = document.getElementById("energy-fill");
-  if(ef){ ef.style.width = pct+"%"; ef.style.background = color; }
-  const et = document.getElementById("energy-text");
-  if(et) et.textContent = s.energy+" / 10";
-  const sbxp = document.getElementById("sb-xp");
-  if(sbxp) sbxp.textContent = s.xp+" XP";
-  const sbst = document.getElementById("sb-streak");
-  if(sbst) sbst.textContent = s.streak+" 🔥";
-
-  // Mobile
-  const efm = document.getElementById("energy-fill-mobile");
-  if(efm){ efm.style.width = pct+"%"; efm.style.background = color; }
-  const etm = document.getElementById("energy-text-mobile");
-  if(etm) etm.textContent = s.energy+" / 10";
-  const txpm = document.getElementById("top-xp-mobile");
-  if(txpm) txpm.textContent = s.xp+" XP";
-  const ttm = document.getElementById("top-title-mobile");
-  if(ttm) ttm.textContent = title;
+  const fill = document.getElementById("energy-fill");
+  fill.style.width = pct + "%";
+  fill.style.background = pct > 50 ? "#1D9E75" : pct > 20 ? "#F5A623" : "#E24B4A";
+  document.getElementById("top-title").textContent =
+    s.energy <= 0 ? "Delivery time!" :
+    s.energy <= 3 ? "Almost out of energy..." : "Corner Store";
 }
 
 function setSubject(btn, subj) {
@@ -874,21 +715,5 @@ document.getElementById("student-name").textContent = state.student.name;
 document.getElementById("student-grade").textContent = "Grade "+state.student.grade+" · "+state.student.subject;
 document.getElementById("streak-display").innerHTML = state.student.streak + \` <span class="streak-flame streak-active">🔥</span>\`;
 </script>
-
-<!-- MOBILE BOTTOM NAV -->
-<div class="mobile-bottom-nav">
-  <div class="nav-item active" id="mob-nav-home" onclick="goTo('home')">
-    <span class="nav-icon">🏪</span><span>Store</span>
-  </div>
-  <div class="nav-item" id="mob-nav-store" onclick="startSession()">
-    <span class="nav-icon">▶</span><span>Play</span>
-  </div>
-  <div class="nav-item" id="mob-nav-progress" onclick="goTo('progress')">
-    <span class="nav-icon">📊</span><span>Progress</span>
-  </div>
-</div>
-
-</div><!-- end main-content -->
-</div><!-- end app-shell -->
 </body>
 </html>
