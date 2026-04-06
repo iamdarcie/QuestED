@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>QuestED — Level Up Learning</title>
+<title>QuestED - Level Up Learning</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -169,7 +169,7 @@ h1,h2,h3,.big,.btn,.section-title,.stat-val,.result-num,.sidebar-logo,.page-titl
       <div id="sb-avatar" style="width:42px;height:42px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-family:Nunito;font-size:14px;font-weight:800;color:var(--green-dark);flex-shrink:0">AR</div>
       <div>
         <div id="sb-name" style="font-family:Nunito;font-size:14px;font-weight:800">Alex Rivera</div>
-        <div id="sb-grade" style="font-size:12px;color:var(--text-soft)">Grade 3 · Math</div>
+        <div id="sb-grade" style="font-size:12px;color:var(--text-soft)">Grade 3 &middot; Math</div>
       </div>
     </div>
     <span class="xp-pill" id="sb-xp">15 XP</span>
@@ -204,7 +204,7 @@ h1,h2,h3,.big,.btn,.section-title,.stat-val,.result-num,.sidebar-logo,.page-titl
     <div id="home-avatar" style="width:46px;height:46px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-family:Nunito;font-size:15px;font-weight:800;color:var(--green-dark);flex-shrink:0">AR</div>
     <div style="flex:1">
       <div id="home-name" style="font-family:Nunito;font-size:16px;font-weight:800">Alex Rivera</div>
-      <div id="home-grade" style="font-size:12px;color:var(--text-soft)">Grade 3 · Math</div>
+      <div id="home-grade" style="font-size:12px;color:var(--text-soft)">Grade 3 &middot; Math</div>
     </div>
     <div style="text-align:right">
       <div style="font-size:12px;color:var(--text-soft)">Streak</div>
@@ -455,7 +455,7 @@ function showCustomer() {
   c.wants.forEach(function(w) {
     orderParts.push(w.qty + " " + w.item + (w.qty > 1 ? "s" : "") + " (" + fmt(w.price) + " each)");
   });
-  document.getElementById("cust-text").textContent = '"Hi! I\'d like ' + orderParts.join(" + ") + '. Here\'s ' + fmt(c.pays) + '."';
+  document.getElementById("cust-text").textContent = "Hi! I'd like " + orderParts.join(" and ") + ". Here's " + fmt(c.pays) + ".";
 
   var energy = state.student.energy;
   var mode = energy <= 0 ? "Recovery" : energy <= 3 ? "Easy mode" : "Normal";
